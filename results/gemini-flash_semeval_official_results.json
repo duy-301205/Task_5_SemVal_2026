@@ -1,0 +1,194 @@
+[
+    {
+        "id": "0",
+        "prediction": 4.8,
+        "ground_truth": 3.6,
+        "raw_response": "4.8"
+    },
+    {
+        "id": "1",
+        "prediction": 2.8,
+        "ground_truth": 3.6,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "2",
+        "prediction": 4.2,
+        "ground_truth": 3.8,
+        "raw_response": "4.2"
+    },
+    {
+        "id": "3",
+        "prediction": 3.8,
+        "ground_truth": 4.2,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "4",
+        "prediction": 4.8,
+        "ground_truth": 3.0,
+        "raw_response": "4.8"
+    },
+    {
+        "id": "5",
+        "prediction": 3.8,
+        "ground_truth": 3.0,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "6",
+        "prediction": 4.8,
+        "ground_truth": 4.6,
+        "raw_response": "4.8"
+    },
+    {
+        "id": "7",
+        "prediction": 1.0,
+        "ground_truth": 1.3333333333333333,
+        "raw_response": "1.0"
+    },
+    {
+        "id": "8",
+        "prediction": 2.8,
+        "ground_truth": 2.2,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "9",
+        "prediction": 3.8,
+        "ground_truth": 3.8,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "10",
+        "prediction": 4.0,
+        "ground_truth": 3.2,
+        "raw_response": "4.0"
+    },
+    {
+        "id": "11",
+        "prediction": 2.8,
+        "ground_truth": 2.2,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "12",
+        "prediction": 3.8,
+        "ground_truth": 4.0,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "13",
+        "prediction": 2.8,
+        "ground_truth": 3.0,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "14",
+        "prediction": 2.8,
+        "ground_truth": 2.2,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "15",
+        "prediction": 2.8,
+        "ground_truth": 2.4,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "16",
+        "prediction": 3.8,
+        "ground_truth": 3.4,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "17",
+        "prediction": 2.8,
+        "ground_truth": 2.0,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "18",
+        "prediction": 4.0,
+        "ground_truth": 4.6,
+        "raw_response": "4.0"
+    },
+    {
+        "id": "19",
+        "prediction": 2.8,
+        "ground_truth": 1.2,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "20",
+        "prediction": 2.8,
+        "ground_truth": 2.2,
+        "raw_response": "2.8"
+    },
+    {
+        "id": "21",
+        "prediction": 3.8,
+        "ground_truth": 4.8,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "22",
+        "prediction": 3.8,
+        "ground_truth": 3.2,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "23",
+        "prediction": 3.8,
+        "ground_truth": 3.0,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "24",
+        "prediction": 1.0,
+        "ground_truth": 2.4,
+        "raw_response": "1.0"
+    },
+    {
+        "id": "25",
+        "prediction": 4.2,
+        "ground_truth": 2.6,
+        "raw_response": "4.2"
+    },
+    {
+        "id": "26",
+        "prediction": 3.8,
+        "ground_truth": 3.8,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "27",
+        "prediction": 3.2,
+        "ground_truth": 1.8,
+        "raw_response": "3.2"
+    },
+    {
+        "id": "28",
+        "prediction": 3.7,
+        "ground_truth": 3.0,
+        "raw_response": "3.7"
+    },
+    {
+        "id": "29",
+        "prediction": 3.8,
+        "ground_truth": 2.8,
+        "raw_response": "3.8"
+    },
+    {
+        "id": "30",
+        "prediction": 4.9,
+        "ground_truth": 4.4,
+        "raw_response": "4.9"
+    },
+    {
+        "id": "31",
+        "prediction": 1.8,
+        "ground_truth": 2.0,
+        "raw_response": "1.8"
+    }
+]

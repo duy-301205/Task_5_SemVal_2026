@@ -1,14 +1,25 @@
 LLM_MODEL_CONFIGS = {
+    # LỰA CHỌN SỐ 1: Ổn định nhất, Quota cao nhất
     "gemini-flash": {
-        "name": "gemini-1.5-flash", 
+        "name": "models/gemini-flash-latest", 
         "type": "gemini",
-        "max_tokens": 100, 
+        "max_tokens": 512, 
         "temperature": 0.0 
     },
-    "phi-3-mini": {
-        "name": "microsoft/Phi-3-mini-4k-instruct",
-        "type": "huggingface",
-        "max_tokens": 50,
-        "temperature": 0.1
+    
+    # LỰA CHỌN SỐ 2: Siêu nhanh, Quota cực thoáng
+    "gemini-flash-lite": {
+        "name": "models/gemini-flash-lite-latest",
+        "type": "gemini",
+        "max_tokens": 400,
+        "temperature": 0.0
+    },
+
+    # Chỉ dùng bản Pro khi thực sự cần độ chính xác cực cao cho các câu khó
+    "gemini-pro": {
+        "name": "models/gemini-pro-latest",
+        "type": "gemini",
+        "max_tokens": 800,
+        "temperature": 0.0
     }
 }
