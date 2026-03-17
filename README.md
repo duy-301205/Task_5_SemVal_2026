@@ -36,30 +36,30 @@ Dự án tập trung vào việc tối ưu hóa khả năng suy luận của LLM
 
 ```
 # 🛠 Cài đặt & Sử dụng
-### 1. Khởi tạo môi trường
+## 1. Khởi tạo môi trường
 Bạn nên sử dụng Python 3.9+ và môi trường ảo .venv:
 
-##### Clone dự án
+### Clone dự án
 git clone [https://github.com/duy-301205/Task_5_SemVal_2026.git](https://github.com/duy-301205/Task_5_SemVal_2026.git)
 cd Task_5_SemVal_2026
 
-##### Tạo và kích hoạt môi trường ảo
+### Tạo và kích hoạt môi trường ảo
 python -m venv .venv
-##### Windows:
+### Windows:
 .venv\Scripts\activate
-##### Linux/macOS:
+### Linux/macOS:
 source .venv/bin/activate
 
-##### Cài đặt thư viện
+### Cài đặt thư viện
 pip install -r requirements.txt
 
-### 2. Cấu hình API Key
+## 2. Cấu hình API Key
 Tạo file .env tại thư mục gốc và thêm key của bạn:
 
 Plaintext
 GEMINI_API_KEY=your_api_key_here
 
-### 📊 Kết quả (Experiments)
+## 📊 Kết quả (Experiments)
 Hiện tại dự án đang trong quá trình thử nghiệm với mô hình Gemini.
 
 Metric chính: Spearman Correlation, Pearson, MAE.
