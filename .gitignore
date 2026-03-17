@@ -1,0 +1,12 @@
+# Các file chứa secret/config cá nhân
+.env
+.env.local
+
+# Thư mục chứa thư viện (nếu dùng python)
+__pycache__/
+*.py[cod]
+venv/
+env/
+
+# Các file log hoặc kết quả tạm thời
+results/
