@@ -55,38 +55,50 @@ Return ONLY the numeric value.
 
     @staticmethod
     def semeval_official(sample):
-        """
-        Chế độ chuẩn NCKH: Sử dụng Calibration (Hiệu chuẩn) để khớp với nhãn trung bình của người chấm.
-        Sử dụng Persona 'Linguist' để tăng độ sâu suy luận.
-        """
         return f"""
-As an expert linguist specializing in narrative ambiguity, your task is to evaluate the plausibility of a specific word meaning within a three-part story (Beginning, Target Sentence, Ending).
+    As an expert linguist, evaluate the plausibility of a word's meaning in a story on a scale of 1.0 to 5.0. 
+    Human annotators often give middle-range scores (2.0 - 4.0) when the context is ambiguous or could support multiple meanings.
 
-WORD: {sample['homonym']}
-PROPOSED MEANING: {sample['judged_meaning']}
+    ### EXAMPLES FOR CALIBRATION:
 
-STORY PROGRESSION:
-1. Beginning: {sample['precontext']}
-2. Target Sentence: {sample['sentence']}
-3. Ending: {sample['ending']}
+    Example 1:
+    - WORD: track
+    - MEANING: a pair of parallel rails providing a runway for wheels
+    - CONTEXT: Beginning: train station... Sentence: They followed the track. Ending: run along the railway line, hopping from sleeper to sleeper.
+    - ANALYSIS: The ending explicitly mentions "railway line" and "sleeper", strongly confirming the physical rail meaning.
+    - SCORE: 3.6 (High, but not 5.0 because "track" could also metaphorically mean the trail they found).
 
-EVALUATION PROTOCOL:
-- Phase 1: Does the 'Beginning' set a context that makes the 'Proposed Meaning' likely?
-- Phase 2: Does the 'Target Sentence' reinforce this meaning, or could it refer to a different homonym?
-- Phase 3 (Critical): Does the 'Ending' confirm or provide a 'twist' that contradicts the 'Proposed Meaning'?
+    Example 2:
+    - WORD: track
+    - MEANING: evidence pointing to a possible solution
+    - CONTEXT: Beginning: train station... Sentence: They followed the track. Ending: found interesting clues that helped them solve the problem.
+    - ANALYSIS: The ending focuses on "clues" and "solving the problem", making the "evidence" meaning more plausible than the physical rail.
+    - SCORE: 4.2
 
-SCORING CALIBRATION (Strict Scale):
-- 5.0 (Perfect Fit): All three parts of the story clearly and exclusively support this meaning.
-- 4.0 (High Plausibility): The meaning fits well, but the context is slightly generic.
-- 3.0 (Ambiguous): The context is neutral; it could be this meaning or another. There is no strong evidence either way.
-- 2.0 (Low Plausibility): There is a slight mismatch or the ending subtly suggests a different interpretation.
-- 1.0 (Impossible/Contradiction): The Ending or context explicitly reveals that the word refers to something else.
+    Example 3:
+    - WORD: track
+    - MEANING: a pair of parallel rails providing a runway for wheels
+    - CONTEXT: Beginning: train station... Sentence: They followed the track. Ending: (None/Empty)
+    - ANALYSIS: Without an ending, the word is highly ambiguous. It could be the rail or the evidence.
+    - SCORE: 3.0
 
-IMPORTANT: Humans gave an average score here. Do not just pick 1.0 or 5.0 unless it is absolute. If the story is even slightly tricky or vague, the score SHOULD be between 2.5 and 4.0. Be a critical and skeptical judge.
+    ### CURRENT TASK:
+    - WORD: {sample['homonym']}
+    - PROPOSED MEANING: {sample['judged_meaning']}
 
-OUTPUT FORMAT: Return ONLY a single decimal number (e.g., 2.4, 3.7, 4.8). No explanation.
-"""
+    STORY:
+    1. Beginning: {sample['precontext']}
+    2. Target Sentence: {sample['sentence']}
+    3. Ending: {sample['ending']}
 
+    EVALUATION PROTOCOL:
+    - Phase 1: Assess if the 'Beginning' makes the 'Meaning' possible.
+    - Phase 2: Assess if the 'Target Sentence' uses the word in a way that fits the 'Meaning'.
+    - Phase 3: Does the 'Ending' confirm, contradict, or leave the meaning ambiguous?
+    - Phase 4: Match human tendency. If the story allows for another interpretation, stay within the 2.5 - 3.8 range.
+
+    OUTPUT FORMAT: Return ONLY a single decimal number (e.g., 3.2). No explanation.
+    """
 
     @staticmethod
     def improved(sample):

@@ -25,8 +25,9 @@ def main():
 
     parser = AmbiStoryParser(data)
     
-    samples = parser.get_samples()
-
+    full_samples = parser.get_samples()
+    samples = full_samples[:10]
+    
     # 3. Cấu hình thí nghiệm
     model_key = "gemini-flash" 
     strategy = "semeval_official"

@@ -2,7 +2,7 @@ from google import genai
 import os
 
 # Nhớ thay bằng Key mới của Duy nhé
-API_KEY = "AIzaSyDB1nkclMp6-zjzvprYqLd6r-8MCZaw6Qg" 
+API_KEY = "AIzaSyDRE7sbdinMy30yE3M4vuGiqAsRMIYBe-I" 
 client = genai.Client(api_key=API_KEY)
 
 print("--- Danh sách các mô hình khả dụng ---")
