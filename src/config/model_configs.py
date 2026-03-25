@@ -1,25 +1,32 @@
 LLM_MODEL_CONFIGS = {
-    # LỰA CHỌN SỐ 1: Mạnh mẽ và hiện đại nhất hiện nay (Gemini 2.5)
+
+    # 🔥 BEST BALANCE (RECOMMENDED)
     "gemini-flash": {
-        "name": "models/gemini-2.5-flash", 
+        "name": "gemini-2.5-flash",
+        "description": "Gemini 2.5 Flash",
         "type": "gemini",
-        "max_tokens": 512, 
-        "temperature": 0.0 
-    },
-    
-    # LỰA CHỌN SỐ 2: Tối ưu tốc độ với phiên bản 2.0 Flash-Lite
-    "gemini-flash-lite": {
-        "name": "models/gemini-2.0-flash-lite",
-        "type": "gemini",
-        "max_tokens": 400,
-        "temperature": 0.0
+        "max_tokens": 10,
+        "temperature": 0.0,
+        "rpm_limit": 5
     },
 
-    # LỰA CHỌN SỐ 3: Đỉnh cao lập luận (Sử dụng 2.5 Pro cho độ chính xác NCKH)
-    "gemini-pro": {
-        "name": "models/gemini-2.5-pro",
+    # ⚡ FAST + CHEAP
+    "gemini-flash-lite": {
+        "name": "gemini-2.0-flash-lite",
+        "description": "Gemini 2.0 Flash Lite",
         "type": "gemini",
-        "max_tokens": 800,
-        "temperature": 0.0
+        "max_tokens": 10,
+        "temperature": 0.0,
+        "rpm_limit": 5
+    },
+
+    # 🧠 BEST ACCURACY (NCKH)
+    "gemini-pro": {
+        "name": "gemini-2.5-pro",
+        "description": "Gemini 2.5 Pro",
+        "type": "gemini",
+        "max_tokens": 15,
+        "temperature": 0.0,
+        "rpm_limit": 5
     }
 }

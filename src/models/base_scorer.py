@@ -20,28 +20,31 @@ class BaseLLMScorer:
         return PromptTemplate.basic(sample)
 
     def extract_rating(self, response: str) -> float:
-        """
-        Trích xuất điểm số từ phản hồi của LLM.
-        Hỗ trợ cả số nguyên và số thập phân (ví dụ: 3.5, 4.2).
-        """
         if not response:
             return 3.0
 
-        # 1. Thử tìm định dạng "Rating: X" hoặc "Score: X" trước để tránh lấy nhầm số trong văn bản
-        label_match = re.search(r'(?:rating|score|value)[:\s]+([1-5](?:\.[0-9]+)?)', response, re.IGNORECASE)
+        # Clean up string
+        response = response.strip().replace(',', '.') # Đổi dấu phẩy thành dấu chấm nếu có
+
+        # 1. Ưu tiên dạng có label (Rating: 4.5)
+        label_match = re.search(
+            r'(?:rating|score|value|plausibility)\s*[:\-]?\s*([1-5](?:\.\d+)?)',
+            response,
+            re.IGNORECASE
+        )
         if label_match:
             return float(label_match.group(1))
 
-        # 2. Nếu không thấy label, tìm số đầu tiên xuất hiện trong dải 1-5
-        # Regex này bắt được: "5", "4.5", "3.25", v.v.
-        match = re.search(r'([1-5](?:\.[0-9]+)?)', response)
+        # 2. Tìm tất cả các số từ 1.0 đến 5.0 trong văn bản
+        # Thay \b bằng các khoảng trắng hoặc biên linh hoạt hơn
+        all_numbers = re.findall(r'(?<![\d\.])([1-5](?:\.\d+)?)(?![\d\.])', response)
         
-        if match:
-            val = float(match.group(1))
-            # Đảm bảo giá trị không vượt quá dải [1, 5]
+        if all_numbers:
+            # Lấy số cuối cùng vì AI thường chốt hạ ở cuối câu
+            val = float(all_numbers[-1])
             return max(1.0, min(5.0, val))
-            
-        # 3. Trả về điểm trung tính nếu thất bại hoàn toàn
+
+        # 3. Fallback trung tính
         return 3.0
 
     def score_plausibility(self, sample):

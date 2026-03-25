@@ -1,12 +1,12 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from src.models.base_scorer import BaseLLMScorer
+import numpy as np
 
 
 class HuggingFaceLLMScorer(BaseLLMScorer):
 
     def __init__(self, model_key, config, prompt_strategy="basic"):
-
         super().__init__(model_key, config, prompt_strategy)
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -24,27 +24,35 @@ class HuggingFaceLLMScorer(BaseLLMScorer):
 
     def generate(self, prompt):
 
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        inputs = self.tokenizer(prompt, return_tensors="pt")
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
-        output = self.model.generate(
-            **inputs,
-            max_new_tokens=self.config["max_tokens"],
-            temperature=self.config["temperature"]
-        )
+        with torch.no_grad():
+            output = self.model.generate(
+                **inputs,
+                max_new_tokens=10,
+                temperature=self.config["temperature"],
+                do_sample=True,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
 
         text = self.tokenizer.decode(
             output[0][inputs["input_ids"].shape[1]:],
             skip_special_tokens=True
         )
 
-        return text
+        return text.strip()
 
     def score_plausibility(self, sample):
 
         prompt = self.create_prompt(sample)
 
-        response = self.generate(prompt)
+        scores = []
 
-        rating = self.extract_rating(response)
+        for _ in range(2):  # self-consistency
+            response = self.generate(prompt)
+            rating = self.extract_rating(response)
+            scores.append(rating)
 
-        return rating, response
+        return float(np.mean(scores)), response

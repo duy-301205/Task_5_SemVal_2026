@@ -1,68 +1,90 @@
 import json
 import os
+import random
+import numpy as np
 from dotenv import load_dotenv
+from datetime import datetime
 
 from src.parser.ambistory_parser import AmbiStoryParser
 from src.utils.factory import create_llm_scorer
 from src.evaluation.evaluator import evaluate_llm_scorer
 
-DATA_PATH = "data/dev.json"
+DATA_PATH = "data/train.json"
+MAX_SAMPLES = None  # set = 10 để debug
 
 def main():
-    # 1. Load biến môi trường
+    # ===== SEED =====
+    random.seed(42)
+    np.random.seed(42)
+
+    # ===== ENV =====
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY")
 
-    if api_key is None:
-        raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
+    if not api_key:
+        raise ValueError("Missing GEMINI_API_KEY")
 
-    # 2. Đọc và parse dataset
+    # ===== LOAD DATA =====
     if not os.path.exists(DATA_PATH):
-        raise FileNotFoundError(f"Không tìm thấy file dữ liệu tại {DATA_PATH}")
+        raise FileNotFoundError(DATA_PATH)
 
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     parser = AmbiStoryParser(data)
-    
     full_samples = parser.get_samples()
-    samples = full_samples[:10]
-    
-    # 3. Cấu hình thí nghiệm
-    model_key = "gemini-flash" 
+
+    samples = full_samples if MAX_SAMPLES is None else full_samples[:MAX_SAMPLES]
+
+    # ===== CONFIG =====
+    model_key = "gemini-flash"
     strategy = "semeval_official"
-    
-    # Tạo đường dẫn lưu kết quả riêng biệt cho từng model/strategy
+
     save_dir = "results"
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    save_path = f"{save_dir}/{model_key}_{strategy}_results.json"
+    os.makedirs(save_dir, exist_ok=True)
 
-    print(f"=== Bắt đầu thí nghiệm ===")
-    print(f"Model: {model_key}")
-    print(f"Strategy: {strategy}")
-    print(f"Dữ liệu lưu tại: {save_path}")
-    print(f"Số lượng mẫu: {len(samples)}")
-    print("---------------------------")
+    save_path = f"{save_dir}/{model_key}_{strategy}.json"
 
-    # 4. Tạo scorer
+    print("\n=== EXPERIMENT START ===")
+    print({
+        "model": model_key,
+        "strategy": strategy,
+        "samples": len(samples),
+        "save": save_path
+    })
+    print("========================\n")
+
+    # ===== SCORER =====
     scorer = create_llm_scorer(
         model_key=model_key,
         prompt_strategy=strategy,
         api_key=api_key
     )
 
-    # 5. Evaluation (Thêm save_path để kích hoạt cơ chế Resume)
-    results = evaluate_llm_scorer(scorer, samples, save_path=save_path)
+    # ===== RUN =====
+    try:
+        results = evaluate_llm_scorer(
+            scorer,
+            samples,
+            save_path=save_path
+        )
+    except Exception as e:
+        print(f"❌ Fatal error: {e}")
+        return
 
-    print("\n" + "="*30)
-    print("KẾT QUẢ ĐÁNH GIÁ CUỐI CÙNG:")
-    for metric, value in results.items():
-        if isinstance(value, float):
-            print(f"{metric.upper()}: {value:.4f}")
+    # ===== PRINT =====
+    print("\n" + "="*40)
+    print("FINAL RESULTS")
+    print("="*40)
+
+    for k, v in results.items():
+        if isinstance(v, float):
+            print(f"{k.upper()}: {v:.4f}")
         else:
-            print(f"{metric.upper()}: {value}")
-    print("="*30)
+            print(f"{k.upper()}: {v}")
+
+    print("="*40)
+
 
 if __name__ == "__main__":
     main()
