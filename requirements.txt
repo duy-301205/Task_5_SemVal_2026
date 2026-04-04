@@ -3,5 +3,6 @@ torch
 transformers
 tqdm
 scipy
-google-genai
 python-dotenv
+groq          
+openai

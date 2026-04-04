@@ -1,13 +1,17 @@
-from google import genai
 import os
+from groq import Groq
+from dotenv import load_dotenv
 
-# Nhớ thay bằng Key mới của Duy nhé
-API_KEY = "AIzaSyDRE7sbdinMy30yE3M4vuGiqAsRMIYBe-I" 
-client = genai.Client(api_key=API_KEY)
+load_dotenv()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-print("--- Danh sách các mô hình khả dụng ---")
-for model in client.models.list():
-    # SDK mới sử dụng các thuộc tính đơn giản hơn
-    print(f"ID: {model.name}")
-    print(f"Tên hiển thị: {model.display_name}")
-    print("-" * 30)
+print("🔍 Đang quét danh sách model trên Groq cho Duy...\n")
+
+try:
+    models = client.models.list()
+    print(f"{'MODEL ID':<40} | {'OWNED BY':<15}")
+    print("-" * 60)
+    for m in models.data:
+        print(f"{m.id:<40} | {m.owned_by:<15}")
+except Exception as e:
+    print(f"❌ Lỗi: {e}")

@@ -1,103 +1,86 @@
 class PromptTemplate:
 
     @staticmethod
-    def basic(sample):
-        """
-        Baseline strategy: Đánh giá đơn giản, hỗ trợ số thập phân.
-        """
-        return f"""
-Rate the plausibility of a word meaning in context.
+    def chain_of_thought(sample):
+        return f"""You are an expert linguist specialized in Lexical Semantics.
+Analyze the plausibility of the 'Proposed Meaning' for the 'Target Word' based on a three-part narrative.
 
-Word: {sample['homonym']}
-Meaning: {sample['judged_meaning']}
-
+[DATA]
+Target Word: {sample['homonym']}
+Proposed Meaning: {sample['judged_meaning']}
+---
 Context:
-{sample['full_context']}
+1. Beginning: {sample['precontext']}
+2. Sentence: {sample['sentence']}
+3. Ending: {sample['ending']}
 
-Scale:
-1.0 = Not plausible at all
-5.0 = Highly plausible
+[TASK]
+Follow these steps strictly:
+Step 1 (Contextual Flow): Analyze how the 'Beginning' and 'Sentence' set up the target word. Is the meaning possible at this stage?
+Step 2 (The Ending Test): Critically evaluate the 'Ending'. Does it provide a twist that contradicts the meaning, or does it confirm it? (Crucial for AmbiStory).
+Step 3 (Conflict Detection): Identify any semantic clashes between the 'Proposed Meaning' and the physical/logical world described in the full story.
 
-Instruction: 
-Return a single numeric value between 1.0 and 5.0. You are encouraged to use decimals (e.g., 3.5, 4.2) to reflect your confidence levels.
-Return ONLY the number.
-"""
+[SCORING SCALE]
+- 1.0 to 1.5: Direct logical contradiction (e.g., the ending says the object is broken, but meaning implies it's working).
+- 2.0 to 3.0: High improbable or lacks any supporting evidence.
+- 3.5 to 4.5: Highly plausible, fits the narrative flow well.
+- 5.0: Perfectly confirmed by all parts of the context.
 
+Final Answer: Briefly state your reasoning for each step, then end with 'Rating: X.X'"""
+    
     @staticmethod
-    def criteria(sample):
-        """
-        Criteria strategy: Phân tích 3 phần của câu chuyện, ép model khắt khe hơn.
-        """
-        return f"""
-You are evaluating whether a proposed meaning fits the narrative based on three parts: the beginning, the sentence itself, and the ending.
+    def one_shot(sample):
+        return f"""You are an expert linguist. Rate the word meaning plausibility from 1.0 to 5.0.
 
-Word: {sample['homonym']}
-Meaning: {sample['judged_meaning']}
+[EXAMPLE]
+Context:
+- Beginning: The professional chef was preparing a specialized fish dish.
+- Sentence: He reached for the scale to ensure the portions were exact.
+- Ending: He then used the knife to remove the skin and bones.
+Word: scale
+Proposed Meaning: a device used to weigh object.
+Analysis: The beginning mentions portions, and the sentence mentions exactness, which supports weighing. The ending doesn't contradict it.
+Rating: 4.8
 
-Context Breakdown:
-- Beginning: {sample['precontext']}
-- Sentence: {sample['sentence']}
-- Ending: {sample['ending']}
-
-Evaluation Criteria:
-1. How strongly does the beginning suggest this meaning?
-2. Does the target sentence support this meaning?
-3. Does the ending confirm or contradict this meaning?
-
-Scale:
-1.0: Completely implausible/contradictory
-5.0: Highly plausible and confirmed
-
-Instruction:
-Provide a final plausibility score between 1.0 and 5.0. Decimals (e.g., 2.7, 4.3) are highly preferred to capture subtle nuances. 
-Return ONLY the numeric value.
-"""
-
-    @staticmethod
-    def semeval_official(sample):
-        return f"""You are an expert linguist evaluating word meaning plausibility.
-
-Word: {sample['homonym']}
-Proposed meaning: {sample['judged_meaning']}
-
+[YOUR TASK]
 Context:
 - Beginning: {sample['precontext']}
 - Sentence: {sample['sentence']}
 - Ending: {sample['ending']}
-
-Evaluation steps:
-1. Does the beginning make the meaning possible?
-2. Does the sentence support the meaning?
-3. Does the ending confirm or contradict it? (MOST IMPORTANT)
-
-Scoring rules:
-- Strong contradiction → 1.0–2.0
-- Weak or mixed evidence → 2.5–3.5
-- Strong support → 4.0–5.0
-
-Task:
-Briefly analyze the context evidence, then provide the final rating between 1.0 and 5.0.
-Your final answer must be at the very end in the format: 'Rating: X.X'"""
-    @staticmethod
-    def improved(sample):
-        """
-        Rule-based strategy: Dành cho việc tinh chỉnh nhanh dựa trên các quy tắc logic.
-        """
-        return f"""
-Analyze the plausibility of the word meaning within the provided narrative.
-
 Word: {sample['homonym']}
-Meaning: {sample['judged_meaning']}
+Proposed Meaning: {sample['judged_meaning']}
 
-Narrative:
-{sample['full_context']}
+Analysis: (Analyze briefly)
+Rating: """
 
-Scoring Rules:
-- Direct contradiction from any part of the context: Score 1.0 - 2.0
-- Neutral context or lack of evidence: Score 3.0
-- Strong supporting evidence or confirmation: Score 4.0 - 5.0
+    @staticmethod
+    def few_shot(sample):
+        return f"""You are a linguistic expert evaluating the plausibility of word senses in narratives.
+Rate the following on a scale of 1.0 (Implausible) to 5.0 (Perfectly Plausible).
 
-Instruction:
-Return a score between 1.0 and 5.0. Use decimal values (e.g., 3.8) for precise evaluation.
-Output format: Just the number.
-"""
+[EXAMPLES]
+1. Plausible Case:
+Context: [He was hiking up the mountain. / He reached the peak just before sunset. / The view from the top was breathtaking.]
+Word: peak | Meaning: the pointed top of a mountain.
+Rating: 5.0
+
+2. Contradictory Case:
+Context: [She wanted to play music. / She sat down at the organ to practice. / Then she went to the hospital for her kidney transplant.]
+Word: organ | Meaning: a large musical instrument with pipes.
+Rating: 1.2 (Reason: The ending reveals 'organ' refers to a biological body part, not the instrument).
+
+3. Ambiguous/Neutral Case:
+Context: [He went to the bank. / He stood there for a long time. / The weather was getting cold.]
+Word: bank | Meaning: a financial institution.
+Rating: 3.0 (Reason: Not enough context to confirm if it's a river bank or a money bank).
+
+[CURRENT TASK]
+Context:
+- Beginning: {sample['precontext']}
+- Sentence: {sample['sentence']}
+- Ending: {sample['ending']}
+Word: {sample['homonym']}
+Proposed Meaning: {sample['judged_meaning']}
+
+Brief Analysis:
+Rating: """
